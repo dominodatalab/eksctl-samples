@@ -1,0 +1,36 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: data-plane
+  region: us-west-2
+
+nodeGroups:
+  - name: data-plane-platform
+    instanceType: m5.2xlarge
+    minSize: 1
+    maxSize: 2
+    desiredCapacity: 1
+    volumeSize: 128
+    availabilityZones: ["us-west-2a"]
+    labels:
+      "dominodatalab.com/node-pool": "platform"
+    tags:
+      "k8s.io/cluster-autoscaler/node-template/label/dominodatalab.com/node-pool": "platform"
+      "k8s.io/cluster-autoscaler/enabled": "true"
+      "k8s.io/cluster-autoscaler/data-plane": "owned"
+  - name: data-plane-default
+    instanceType: m5.2xlarge
+    minSize: 0
+    maxSize: 10
+    desiredCapacity: 1
+    volumeSize: 400
+    availabilityZones: ["us-west-2a"]
+    labels:
+      "dominodatalab.com/node-pool": "default"
+    tags:
+      "k8s.io/cluster-autoscaler/node-template/label/dominodatalab.com/node-pool": "default"
+      "k8s.io/cluster-autoscaler/enabled": "true"
+      "k8s.io/cluster-autoscaler/data-plane": "owned"
+
+availabilityZones: ["us-west-2a", "us-west-2b"]
